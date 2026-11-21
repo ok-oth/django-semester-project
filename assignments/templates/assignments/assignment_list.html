@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head><title>My Assignments</title></head>
+<body>
+    <p>
+        Logged in as <strong>{{ request.user.username }}</strong> |
+        <form action="{% url 'logout' %}" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
+    </p>
+
+    <h2>Add New Assignment</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save Assignment</button>
+    </form>
+
+    <hr>
+    <h2>My Tracked Assignments</h2>
+    <ul>
+        {% for item in assignments %}
+            <li>
+                <strong>[{{ item.course_code }}] {{ item.title }}</strong> — Due: {{ item.due_date }}
+                (<em>{{ item.get_status_display }}</em>)
+                <a href="{% url 'toggle_complete' item.pk %}">[Toggle Complete]</a>
+                {% if item.description %}<br><small>{{ item.description }}</small>{% endif %}
+            </li>
+        {% empty %}
+            <li>No assignments added yet.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

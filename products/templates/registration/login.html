@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head><title>Login - Assignment Tracker</title></head>
+<body>
+    <h2>Student Login</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Log In</button>
+    </form>
+    <p>Don't have an account? <a href="{% url 'signup' %}">Sign up here</a></p>
+</body>
+</html>

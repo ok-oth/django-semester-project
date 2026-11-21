@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'products',
+    'assignments',
+    
 ]
 
 MIDDLEWARE = [
@@ -127,4 +129,9 @@ MAILERS = {
     'default': {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
+    
+    
 }
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'assignment_list'
+LOGOUT_REDIRECT_URL = 'login'
