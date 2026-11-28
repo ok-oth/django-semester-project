@@ -1,13 +1,17 @@
-<!DOCTYPE html>
-<html>
-<head><title>Edit Assignment</title></head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}Edit Assignment — Assignment & Task Tracker{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 520px; margin: 0 auto;">
     <h2>Edit Assignment: {{ assignment.title }}</h2>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Update Assignment</button>
-        <a href="{% url 'assignment_list' %}">Cancel</a>
+        <div class="actions">
+            <button type="submit">Update Assignment</button>
+            <a href="{% url 'assignment_list' %}" class="btn btn-secondary">Cancel</a>
+        </div>
     </form>
-</body>
-</html>
+</div>
+{% endblock %}

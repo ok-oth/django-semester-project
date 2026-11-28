@@ -1,13 +1,15 @@
-<!DOCTYPE html>
-<html>
-<head><title>Login - Assignment Tracker</title></head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}Login — Assignment & Task Tracker{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 520px; margin: 0 auto;">
     <h2>Student Login</h2>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Log In</button>
     </form>
-    <p>Don't have an account? <a href="{% url 'signup' %}">Sign up here</a></p>
-</body>
-</html>
+    <p class="meta">Don't have an account? <a href="{% url 'signup' %}">Sign up here</a></p>
+</div>
+{% endblock %}

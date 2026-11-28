@@ -1,0 +1,4 @@
+cd C:\Users\WAYNE\django-semester-project
+mkdir static\images -Force
+Copy-Item "C:\Users\WAYNE\OneDrive - Strathmore University\Pictures\Screenshots\Screenshot 2026-11-28 154944.png" "C:\Users\WAYNE\django-semester-project\static\images\strathmore-logo.png" -Force
+Test-Path "C:\Users\WAYNE\django-semester-project\static\images\strathmore-logo.png"

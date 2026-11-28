@@ -1,54 +1,62 @@
-<!DOCTYPE html>
-<html>
-<head><title>Student Assignment & Task Tracker</title></head>
-<body>
-    <p>
-        Logged in as <strong>{{ request.user.username }}</strong> |
-        <form action="{% url 'logout' %}" method="post" style="display:inline;">
+{% extends "base.html" %}
+
+{% block title %}My Assignments — Assignment & Task Tracker{% endblock %}
+
+{% block content %}
+<div class="grid">
+    <section class="card">
+        <h2>Add New Assignment</h2>
+        <form method="post">
             {% csrf_token %}
-            <button type="submit">Logout</button>
+            {{ form.as_p }}
+            <button type="submit">Save Assignment</button>
         </form>
-    </p>
+    </section>
 
-    <h2>Add New Assignment</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Save Assignment</button>
-    </form>
+    <section class="card">
+        <h2>My Assignments</h2>
 
-    <hr>
-    <h2>My Assignments</h2>
+        <form method="get" class="filter-bar">
+            <input type="text" name="q" value="{{ search_query }}" placeholder="Search course or title...">
+            <select name="status">
+                <option value="">All Statuses</option>
+                <option value="PENDING" {% if status_filter == 'PENDING' %}selected{% endif %}>Pending</option>
+                <option value="IN_PROGRESS" {% if status_filter == 'IN_PROGRESS' %}selected{% endif %}>In Progress</option>
+                <option value="COMPLETED" {% if status_filter == 'COMPLETED' %}selected{% endif %}>Completed</option>
+            </select>
+            <button type="submit" class="btn-sm">Filter</button>
+            <a href="{% url 'assignment_list' %}" class="btn btn-secondary btn-sm">Reset</a>
+        </form>
 
-    <form method="get">
-        <input type="text" name="q" value="{{ search_query }}" placeholder="Search course or title...">
-        <select name="status">
-            <option value="">All Statuses</option>
-            <option value="PENDING" {% if status_filter == 'PENDING' %}selected{% endif %}>Pending</option>
-            <option value="IN_PROGRESS" {% if status_filter == 'IN_PROGRESS' %}selected{% endif %}>In Progress</option>
-            <option value="COMPLETED" {% if status_filter == 'COMPLETED' %}selected{% endif %}>Completed</option>
-        </select>
-        <button type="submit">Filter</button>
-        <a href="{% url 'assignment_list' %}">Reset</a>
-    </form>
-
-    <ul>
-        {% for item in assignments %}
-            <li>
-                <strong>[{{ item.course_code }}] {{ item.title }}</strong>
-                — Due: {{ item.due_date }}
-                | Status: <em>{{ item.get_status_display }}</em>
-                <a href="{% url 'edit_assignment' item.pk %}">[Edit]</a>
-                <a href="{% url 'delete_assignment' item.pk %}">[Delete]</a>
-                <form action="{% url 'toggle_complete' item.pk %}" method="post" style="display:inline;">
-                    {% csrf_token %}
-                    <button type="submit">{% if item.status == 'COMPLETED' %}Mark Pending{% else %}Mark Completed{% endif %}</button>
-                </form>
-                {% if item.description %}<br><small>{{ item.description }}</small>{% endif %}
-            </li>
-        {% empty %}
-            <li>No matching assignments found.</li>
-        {% endfor %}
-    </ul>
-</body>
-</html>
+        <ul class="assignment-list">
+            {% for item in assignments %}
+                <li class="assignment-item">
+                    <div class="assignment-top">
+                        <div>
+                            <span class="course-tag">{{ item.course_code }}</span>
+                            <strong>{{ item.title }}</strong>
+                        </div>
+                        <span class="badge badge-{{ item.status }}">{{ item.get_status_display }}</span>
+                    </div>
+                    <div class="meta">Due: <strong>{{ item.due_date }}</strong></div>
+                    {% if item.description %}
+                        <div class="meta">{{ item.description }}</div>
+                    {% endif %}
+                    <div class="actions">
+                        <a href="{% url 'edit_assignment' item.pk %}" class="btn btn-secondary btn-sm">Edit</a>
+                        <a href="{% url 'delete_assignment' item.pk %}" class="btn btn-danger btn-sm">Delete</a>
+                        <form action="{% url 'toggle_complete' item.pk %}" method="post" style="display:inline; margin:0;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-secondary btn-sm">
+                                {% if item.status == 'COMPLETED' %}Mark Pending{% else %}Mark Completed{% endif %}
+                            </button>
+                        </form>
+                    </div>
+                </li>
+            {% empty %}
+                <li class="meta">No matching assignments found.</li>
+            {% endfor %}
+        </ul>
+    </section>
+</div>
+{% endblock %}
