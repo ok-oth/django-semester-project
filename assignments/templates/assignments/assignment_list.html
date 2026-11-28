@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head><title>My Assignments</title></head>
+<head><title>Student Assignment & Task Tracker</title></head>
 <body>
     <p>
         Logged in as <strong>{{ request.user.username }}</strong> |
@@ -18,17 +18,36 @@
     </form>
 
     <hr>
-    <h2>My Tracked Assignments</h2>
+    <h2>My Assignments</h2>
+
+    <form method="get">
+        <input type="text" name="q" value="{{ search_query }}" placeholder="Search course or title...">
+        <select name="status">
+            <option value="">All Statuses</option>
+            <option value="PENDING" {% if status_filter == 'PENDING' %}selected{% endif %}>Pending</option>
+            <option value="IN_PROGRESS" {% if status_filter == 'IN_PROGRESS' %}selected{% endif %}>In Progress</option>
+            <option value="COMPLETED" {% if status_filter == 'COMPLETED' %}selected{% endif %}>Completed</option>
+        </select>
+        <button type="submit">Filter</button>
+        <a href="{% url 'assignment_list' %}">Reset</a>
+    </form>
+
     <ul>
         {% for item in assignments %}
             <li>
-                <strong>[{{ item.course_code }}] {{ item.title }}</strong> — Due: {{ item.due_date }}
-                (<em>{{ item.get_status_display }}</em>)
-                <a href="{% url 'toggle_complete' item.pk %}">[Toggle Complete]</a>
+                <strong>[{{ item.course_code }}] {{ item.title }}</strong>
+                — Due: {{ item.due_date }}
+                | Status: <em>{{ item.get_status_display }}</em>
+                <a href="{% url 'edit_assignment' item.pk %}">[Edit]</a>
+                <a href="{% url 'delete_assignment' item.pk %}">[Delete]</a>
+                <form action="{% url 'toggle_complete' item.pk %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit">{% if item.status == 'COMPLETED' %}Mark Pending{% else %}Mark Completed{% endif %}</button>
+                </form>
                 {% if item.description %}<br><small>{{ item.description }}</small>{% endif %}
             </li>
         {% empty %}
-            <li>No assignments added yet.</li>
+            <li>No matching assignments found.</li>
         {% endfor %}
     </ul>
 </body>

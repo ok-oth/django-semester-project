@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head><title>Edit Assignment</title></head>
+<body>
+    <h2>Edit Assignment: {{ assignment.title }}</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Update Assignment</button>
+        <a href="{% url 'assignment_list' %}">Cancel</a>
+    </form>
+</body>
+</html>
